@@ -23,7 +23,7 @@ class Footer extends React.Component {
 
           </Nav>
           <div className="copyright">
-            © {new Date().getFullYear()} Tech{" "}
+            © {new Date().getFullYear()}{" "}
             <i className="tim-icons icon-heart-2" /> by{" "}
             <a
               href="/"
