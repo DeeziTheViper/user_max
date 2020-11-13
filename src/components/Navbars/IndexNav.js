@@ -152,7 +152,7 @@ class ComponentsNavbar extends React.Component {
                                         <i className="tim-icons icon-planet" />
                     Home
                   </DropdownItem>
-                                    <DropdownItem tag={Link} to="/services">
+                                    <DropdownItem tag={Link} to="/pricing">
                                         <i className="tim-icons icon-paper" />
                     Pricing
                   </DropdownItem>
