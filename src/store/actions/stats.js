@@ -30,7 +30,7 @@ export const getStat = (username, token) => {
             "Content-Type": "application/json",
             Authorization: `Token ${token}`,
         }
-        axios.get(`/listApi/status?username=${username}`)
+        axios.get(`/userApi/userstatus?username=${username}`)
             .then(res => {
                 const stats = {
                     roic: res.data[0]?.storage,

@@ -23,7 +23,7 @@ export const getChart = (username, token) => {
             "Content-Type": "application/json",
             Authorization: `Token ${token}`
         }
-        axios.get(`/listApi/history?${username}`)
+        axios.get(`/userApi/userhistory?${username}`)
             .then(res => {
                 const chart = res.data;
                 dispatch(getChartSuccess(chart));

@@ -29,7 +29,7 @@ export const getOrder = (username, token) => {
             "Content-Type": "application/json",
             Authorization: `Token ${token}`
         }
-        axios.get(`/listApi/orders?username=${username}`)
+        axios.get(`/userApi/userorders?username=${username}`)
             .then(res => {
                 const orders = res.data.reverse();
                 dispatch(getOrderSuccess(orders));
