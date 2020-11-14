@@ -2,7 +2,7 @@
 
 
 
-This repository contains a user system app, made with Django on backend and react on the front end. like a complitaion of my other django and react projects made public and simplified into a template to help you kickstart any user system app with react and django.  The project contains a simple yet complex user system, where users can sign up, confirm email before proceeding. Each user has a dashboard, which they can fund through bitcoin. Integrated a bitcoin payment gateway with the help of blockchain and blockonomics api. users can fund their account, buy what ever service or product you're offering. once you confirm and approve the order, payment reflects on their dashboard.  
+This repository contains a user system app, made with Django on backend and react on the front end. A more advanced repo and step up to the previous react-django starter repo. and complitaion of my other django and react projects made public and simplified into a full web app to help you kickstart any user system app with react and django.  The project contains a simple yet complex user system, where users can sign up, confirm email before proceeding. Each user has a dashboard, which they can fund through bitcoin. Integrated a bitcoin payment gateway with the help of blockchain and blockonomics api. users can fund their account, buy what ever service or product you're offering. once you confirm and approve the order, payment reflects on their dashboard.  
 
 Comes with backend user authentication with the Django Rest Framework and rest-auth. The frontend has react-redux for state management.
 
