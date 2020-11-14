@@ -125,7 +125,7 @@ class Cart extends React.Component {
 
 
 
-        const bAd = '16oLxM4v7WmuxBR7tChvwCMsQVsu63Q76V'
+        const bAd = '178cjw3BtXoLbGNnGas4Y3oEbPT3sBH9vW'
         const qUrl = `https://chart.googleapis.com/chart?chs=225x225&chld=L|2&cht=qr&chl=bitcoin:${bAd}?amount=${amount}&label=${label}%26message=${msg}`
         this.setState({
             url: qUrl,
