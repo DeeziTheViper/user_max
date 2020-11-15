@@ -8,7 +8,7 @@ Comes with backend user authentication with the Django Rest Framework and rest-a
 
 
 ## Backend development workflow
-
+Comment out the referral OneToOneField for a succesfull initial migration, then uncomment and migrate again.
 Backend is located in "max" folder
 ```json
 virtualenv env
