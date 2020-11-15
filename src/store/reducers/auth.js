@@ -6,6 +6,7 @@ const initialState = {
   username: null,
   error: null,
   loading: false,
+  sev: null,
   userId: null,
   balance: null,
   withdrawn: null,

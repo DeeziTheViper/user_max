@@ -22,6 +22,14 @@ export const authFail = (detail) => {
   };
 };
 
+export const authFailS = (sev) => {
+  return {
+    type: actionTypes.AUTH_FAILS,
+    error: sev,
+    detail: null,
+  };
+};
+
 export const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("pMonths");
