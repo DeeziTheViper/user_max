@@ -43,38 +43,7 @@ class RegisterPage extends React.Component {
     };
 
 
-    handleFirst = e => {
-        this.setState({ fNameFocus: false })
-        let { firstName } = this.state;
-        let errors = {};
-        let formIsValid = true;
 
-        //Name
-        if (!firstName) {
-            formIsValid = false;
-            errors["first"] = "Cannot be empty";
-        }
-
-
-        this.setState({ errors: errors });
-        return formIsValid;
-    }
-    handleLast = e => {
-        this.setState({ lNameFocus: false })
-        let { lastName } = this.state;
-        let errors = {};
-        let formIsValid = true;
-
-        //Name
-        if (!lastName) {
-            formIsValid = false;
-            errors["last"] = "Cannot be empty";
-        }
-
-
-        this.setState({ errors: errors });
-        return formIsValid;
-    }
 
     handleName = e => {
         this.setState({ fullNameFocus: false })
@@ -346,64 +315,6 @@ class RegisterPage extends React.Component {
                                                     null
                                                 }
                                                 <Form className="form" onSubmit={this.handleSubmit}>
-                                                    <InputGroup
-                                                        className={this.state.errors['first'] ? "has-danger" : classnames({
-                                                            "input-group-focus": this.state.fNameFocus,
-                                                        })}
-                                                    >
-                                                        <InputGroupAddon addonType="prepend">
-                                                            <InputGroupText>
-                                                                <i className="tim-icons icon-single-02" />
-                                                            </InputGroupText>
-                                                        </InputGroupAddon>
-                                                        <Input
-                                                            onChange={this.handleChange}
-                                                            value={firstName}
-                                                            name="firstName"
-                                                            placeholder={
-                                                                this.state.errors["first"] ?
-                                                                    this.state.errors['first']
-                                                                    :
-                                                                    "First Name"
-                                                            }
-                                                            type="text"
-                                                            onFocus={e =>
-                                                                this.setState({ fNameFocus: true })
-                                                            }
-                                                            onBlur={this.handleFirst
-                                                            }
-
-                                                        />
-                                                    </InputGroup>
-                                                    <InputGroup
-                                                        className={this.state.errors['last'] ? "has-danger" : classnames({
-                                                            "input-group-focus": this.state.lNameFocus,
-                                                        })}
-                                                    >
-                                                        <InputGroupAddon addonType="prepend">
-                                                            <InputGroupText>
-                                                                <i className="tim-icons icon-single-02" />
-                                                            </InputGroupText>
-                                                        </InputGroupAddon>
-                                                        <Input
-                                                            onChange={this.handleChange}
-                                                            value={lastName}
-                                                            name="lastName"
-                                                            placeholder={
-                                                                this.state.errors["last"] ?
-                                                                    this.state.errors['last']
-                                                                    :
-                                                                    "Last Name"
-                                                            }
-                                                            type="text"
-                                                            onFocus={e =>
-                                                                this.setState({ lNameFocus: true })
-                                                            }
-                                                            onBlur={this.handleLast
-                                                            }
-
-                                                        />
-                                                    </InputGroup>
                                                     <Label for="error" className="control-label" >{this.state.errors["name"]}</Label>
 
                                                     <InputGroup
@@ -424,7 +335,7 @@ class RegisterPage extends React.Component {
                                                                 this.state.errors["name"] ?
                                                                     this.state.errors['name']
                                                                     :
-                                                                    "Display Name"
+                                                                    "Username"
                                                             }
                                                             type="text"
                                                             onFocus={e =>
@@ -549,20 +460,7 @@ class RegisterPage extends React.Component {
                                                             }
                                                         />
                                                     </InputGroup>
-                                                    <FormGroup check className="text-left">
-                                                        <Label check>
-                                                            <Input type="checkbox" required id="check" />
-                                                            <span className="form-check-sign" />I agree to the{" "}
-                                                            <Link
-                                                                to="/Legal"
 
-                                                            >
-                                                                terms and privacy policy
-                              </Link>
-                              .
-                            </Label>
-
-                                                    </FormGroup>
                                                 </Form>
                                             </CardBody>
                                             <div className="text-center card-footer">
