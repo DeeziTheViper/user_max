@@ -44,7 +44,7 @@ function VerifyPage() {
 
 
     if (valid === true && redirect) {
-        return <Redirect to="/login-page" />;
+        return <Redirect to="/login" />;
     }
 
     return (
