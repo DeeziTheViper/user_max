@@ -22,10 +22,15 @@ class UserAdmin(admin.ModelAdmin):
   
     def has_delete_permission(self, request, obj = None): 
         return False    
-  
+       
+    def delete_queryset(modeladmin, request, queryset):
+        queryset.delete()
+        messages.success(request, "Selected Record(s) Deleted Successfully !!")
+
+
     active.boolean = True
 
-    actions = [make_active,make_inactive]
+    actions = [make_active,make_inactive, delete_queryset]
 
 class StatAdmin(admin.ModelAdmin):
     search_fields = ('user', )
