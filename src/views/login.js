@@ -231,6 +231,7 @@ class LoginPage extends React.Component {
 
 
                                             <div className="text-center card-footer">
+
                                                 {
                                                     this.props.loading ?
                                                         <div className="loader loader-1">

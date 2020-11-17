@@ -152,7 +152,7 @@ class RegisterPage extends React.Component {
     };
 
     checkform() {
-        let { firstName, lastName, username, email, password1, password2, btc_wallet } = this.state;
+        let { username, email, password1, password2, btc_wallet } = this.state;
         const check = document.getElementById("check")
         let errors = {};
         let formIsValid = true;
@@ -167,14 +167,7 @@ class RegisterPage extends React.Component {
             errors["check"] = 'You must agree to the terms first.';
         }
 
-        if (!firstName) {
-            formIsValid = false;
-            errors["first"] = "Cannot be empty";
-        }
-        if (!lastName) {
-            formIsValid = false;
-            errors["last"] = "Cannot be empty";
-        }
+
         if (!btc_wallet) {
             formIsValid = false;
             errors["wallet"] = "Cannot be empty";
@@ -235,9 +228,9 @@ class RegisterPage extends React.Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const { firstName, lastName, username, email, password1, password2, btc_wallet } = this.state;
+        const { username, email, password1, password2, btc_wallet } = this.state;
         if (this.checkform()) {
-            this.props.signup(firstName, lastName, username, email, password1, password2, btc_wallet);
+            this.props.signup(username, email, password1, password2, btc_wallet);
         } else {
             this.checkform();
         }
@@ -460,7 +453,17 @@ class RegisterPage extends React.Component {
                                                             }
                                                         />
                                                     </InputGroup>
+                                                    <FormGroup check className="text-left">
+                                                        <Label check>
+                                                            <Input type="checkbox" required id="check" />
+                                                            <span className="form-check-sign" />I agree to the{" "}
 
+                                terms and privacy policy
+
+                              .
+                            </Label>
+
+                                                    </FormGroup>
                                                 </Form>
                                             </CardBody>
                                             <div className="text-center card-footer">
@@ -519,7 +522,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        signup: (firstName, lastName, username, email, password1, password2, btc_wallet) => dispatch(actions.authSignup(firstName, lastName, username, email, password1, password2, btc_wallet))
+        signup: (username, email, password1, password2, btc_wallet) => dispatch(actions.authSignup(username, email, password1, password2, btc_wallet))
     };
 }
 
