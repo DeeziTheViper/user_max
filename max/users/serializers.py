@@ -221,9 +221,8 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 class SignupSerializer(RegisterSerializer):
     btc_wallet = serializers.CharField(max_length=300)
-    first_name = serializers.CharField(max_length=300)
-    last_name  = serializers.CharField(max_length=300)  
-    passwordtext = serializers.CharField(max_length=300)
+  
+    
     class Meta:
         model = User
         fields = ('email','username','password','btc_wallet','user') 
@@ -231,8 +230,6 @@ class SignupSerializer(RegisterSerializer):
 
     def get_cleaned_data(self):
         return {
-            'first_name': self.validated_data.get('first_name',''),
-            'last_name' : self.validated_data.get('last_name',''),
             'username': self.validated_data.get('username', ''),
             'password1': self.validated_data.get('password1', ''),
             'password2': self.validated_data.get('password2', ''),

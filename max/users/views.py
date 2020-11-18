@@ -188,7 +188,7 @@ class VerifyEmailView(APIView):
     def get_object(self, queryset=None):
         key = self.kwargs['key']
         emailconfirmation = EmailConfirmationHMAC.from_key(key)
-        if not emailconfirmation:
+        if not emailconfirmation: 
             if queryset is None:
                 queryset = self.get_queryset()
             try:

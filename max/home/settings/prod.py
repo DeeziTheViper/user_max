@@ -3,22 +3,13 @@
 from .base import *
 import dj_database_url
 DEBUG = False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://usermax.herokuapp.com']
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('NAME'),
-        'USER': config('USER'), 
-        'PASSWORD': config('PASSWORD'),
-        'HOST': config('HOST'),
-        'PORT': config('PORT', cast=int),
-    } 
-} 
+DATABASES = {} 
 db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
 
-SITE_ID = 3
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -27,7 +18,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000','http://127.0.0.1:3000', 'http://127.0.0.1:8000','http://localhost:3001'
+    'https://usermax.herokuapp.com',
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -6,7 +6,7 @@ from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SECRET_KEY = config('SECRET_KEY')
-ALLOWED_HOSTS = []
+
 INSTALLED_APPS = [
     "bootstrap_admin",
     'django.contrib.admin',
@@ -85,7 +85,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static/'),os.path.join(BASE_DI
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'build/static/media', )
 
-DEBUG_PROPAGATE_EXCEPTIONS = True 
+
 
 PINAX_REFERRALS_IP_ADDRESS_META_FIELD = True
 
