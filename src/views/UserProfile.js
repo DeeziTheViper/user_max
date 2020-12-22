@@ -1,6 +1,6 @@
 
 import React from "react";
-import { connect } from "react-redux"
+import { useSelector } from "react-redux"
 
 import axios from "axios";
 
@@ -23,61 +23,65 @@ import {
 
 
 
-class UserProfile extends React.Component {
+const UserProfile = () => {
+  const user_id = useSelector(state => state.auth.userId)
+  const username = useSelector(state => state.auth.username)
+  const token = useSelector(state => state.auth.token)
 
-  state = {
-    email: "",
-    wallet: "",
-    first_name: "",
-    last_name: "",
-    country: "",
-    address: "",
-    zip_code: "",
-    city: "",
-    new_password1: "",
-    new_password2: "",
-    old_password: "",
-    errors: {}
-
-  };
-
-
-
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
-  };
+  const [oldemail, setOldEmail] = React.useState(null)
+  let [email, setEmail] = React.useState("")
+  let [wallet, setWallet] = React.useState("")
+  let [first_name, setFirst_name] = React.useState("")
+  let [last_name, setLast_name] = React.useState("")
+  let [country, setCountry] = React.useState("")
+  let [address, setAddress] = React.useState("")
+  let [zip_code, setZip_code] = React.useState("")
+  let [city, setCity] = React.useState("")
+  let [new_password1, setNew_password1] = React.useState("")
+  let [new_password2, setNew_password2] = React.useState("")
+  let [old_password, setOld_password] = React.useState("")
+  const [errors, setErrors] = React.useState("")
+  const [detail, setDetail] = React.useState("")
+  const [load, setLoad] = React.useState(false)
+  const [passload, setPLoad] = React.useState(false)
 
 
-  handleWallet = e => {
-    this.setState({ walletFocus: false })
+
+  const [walletFocus, setwalletFocus] = React.useState("")
+  const [emailFocus, setemailFocus] = React.useState("")
+  const [passwordFocus, setpasswordFocus] = React.useState("")
+  const [password2Focus, setpassword2Focus] = React.useState("")
+  const [oldpasswordFocus, setoldpasswordFocus] = React.useState("")
+
+
+
+
+
+  const handleWallet = e => {
+    setwalletFocus(false)
+
     let WAValidator = require('wallet-address-validator');
 
-    let { wallet } = this.state;
     let errors = {};
     let formIsValid = true;
-    wallet.split(' ').join('');
+    if (wallet) {
+      wallet.split(' ').join('');
 
-    if (!wallet) {
-      formIsValid = false;
-      errors["wallet"] = "Cannot be empty";
+      let valid = WAValidator.validate(wallet, 'BTC');
+      if (!valid) {
+        formIsValid = false
+        errors["wallet"] = "Invalid Bitcoin wallet address";
+      }
+
+      setErrors(errors)
+      return formIsValid;
     }
-
-
-    let valid = WAValidator.validate(wallet, 'BTC');
-    if (!valid) {
-      formIsValid = false
-      errors["wallet"] = "Invalid Bitcoin wallet address";
-    }
-
-    this.setState({ errors: errors });
-    return formIsValid;
-
     // This will log 'This is a valid address' to the console.
   }
 
-  handleEmail = e => {
-    this.setState({ emailFocus: false })
-    let { email } = this.state
+  const handleEmail = e => {
+    setemailFocus(false)
+
     let errors = {};
     let formIsValid = true;
     //Email
@@ -95,13 +99,12 @@ class UserProfile extends React.Component {
         errors["email"] = "Email is not valid";
       }
     }
-    this.setState({ errors: errors });
+    setErrors(errors)
     return formIsValid;
   }
 
-  handleOldPass = e => {
-    this.setState({ passwordFocus: false })
-    let { old_password } = this.state;
+  const handleOldPass = e => {
+    setoldpasswordFocus(false)
     let errors = {};
     let formIsValid = true;
     if (!old_password) {
@@ -116,13 +119,12 @@ class UserProfile extends React.Component {
       }
     }
 
-    this.setState({ errors: errors });
+    setErrors(errors)
     return formIsValid;
   }
 
-  handlePass = e => {
-    this.setState({ passwordFocus: false })
-    let { new_password1 } = this.state;
+  const handlePass = e => {
+    setpasswordFocus(false)
     let errors = {};
     let formIsValid = true;
     if (!new_password1) {
@@ -137,43 +139,34 @@ class UserProfile extends React.Component {
       }
     }
 
-    this.setState({ errors: errors });
+    setErrors(errors)
     return formIsValid;
   }
 
-  confirmpassword = e => {
-    this.setState({ password2Focus: false })
-    let { new_password1, new_password2 } = this.state;
-    let errors = {};
+  const confirmpassword = e => {
+    setpassword2Focus(false)
     let formIsValid = true;
 
     if (!new_password2.match(new_password1)) {
       formIsValid = false
       errors["new_password2"] = "Passwords do not match"
     }
-    this.setState({ errors: errors });
+    setErrors(errors)
     return formIsValid;
   }
 
-  checkform() {
-    let { email, wallet } = this.state;
-    let errors = {};
+  const checkform = () => {
     let formIsValid = true;
     let WAValidator = require('wallet-address-validator');
 
+    if (wallet) {
 
-    let valid = WAValidator.validate(wallet, 'BTC');
-
-    if (!wallet) {
-      formIsValid = false;
-      errors["wallet"] = "Cannot be empty";
+      let valid = WAValidator.validate(wallet, 'BTC');
+      if (!valid) {
+        formIsValid = false
+        errors["wallet"] = "Invalid Bitcoin wallet address";
+      }
     }
-
-    if (!valid) {
-      formIsValid = false
-      errors["wallet"] = "Invalid Bitcoin wallet address";
-    }
-
     if (!email) {
       formIsValid = false;
       errors["email"] = "Cannot be empty";
@@ -189,13 +182,12 @@ class UserProfile extends React.Component {
       }
     }
 
-    this.setState({ errors: errors });
+    setErrors(errors)
     return formIsValid;
   }
 
-  checkPass() {
-    let { new_password1, new_password2, old_password } = this.state;
-    let errors = {};
+  const checkPass = () => {
+
     let formIsValid = true;
 
     if (!old_password) {
@@ -229,20 +221,16 @@ class UserProfile extends React.Component {
       errors["new_password2"] = "Passwords do not match"
     }
 
-    this.setState({ errors: errors });
+    setErrors(errors)
     return formIsValid;
   }
 
 
-  updateUser(user_id, token, email,
-    wallet,
-    first_name,
-    last_name,
-    country,
-    address,
-    zip_code,
-    city) {
 
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    setLoad(true)
     const user = {
       email,
       btc_wallet: wallet,
@@ -253,445 +241,395 @@ class UserProfile extends React.Component {
       zip_code,
       city
     }
-    axios.default.headers = {
+    if (checkform()) {
+
+      axios.default.headers = {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`
+      }
+      axios.put(`/rest-auth/update-profile/${user_id}/`, user)
+        .then(res => {
+
+          setDetail('Updated')
+          const userE = JSON.parse(localStorage.getItem("detail"));
+          if (userE) {
+
+            {
+              email === userE.email ?
+                setDetail('Updated')
+                :
+                setDetail("Updated. Confirm New Email.. check your mail")
+            }
+            setLoad(false)
+          }
+          setLoad(false)
+        }
+
+        ).catch(err => {
+          console.log(err)
+          setLoad(false)
+        })
+
+
+
+    } else {
+      checkform();
+      setLoad(false)
+    }
+
+  }
+
+  const handlePassChange = e => {
+    e.preventDefault()
+    setPLoad(true)
+    const pass = {
+      new_password1: new_password1,
+      new_password2: new_password2,
+      old_password: old_password
+    }
+    if (checkPass()) {
+      axios.default.headers = {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`
+      }
+      axios.post('/rest-auth/password/change/', pass)
+        .then(res => {
+          console.log(res)
+          setDetail(res.data.detail)
+        })
+      setPLoad(false)
+    } else {
+      checkPass();
+      setPLoad(false)
+    }
+  }
+
+  React.useEffect(() => {
+    axios.defaults.headers = {
       "Content-Type": "application/json",
       Authorization: `Token ${token}`
     }
-    axios.put(`/rest-auth/update-profile/${user_id}/`, user)
+    axios.get('/rest-auth/user/')
       .then(res => {
-        if (res.data.btc_wallet === wallet) {
-          const update = {
-            email: res.data.email,
-            wallet: res.data.btc_wallet,
-            first_name: res.data.first_name,
-            last_name: res.data.last_name,
-            address: res.data.address,
-            city: res.data.city,
-            country: res.data.country,
-            zip_code: res.data.zip_code,
-          }
-          localStorage.setItem("detail", JSON.stringify(update));
-
-          this.setState({
-            detail: "Updated",
-            email: res.data.email,
-            wallet: res.data.btc_wallet,
-            first_name: res.data.first_name,
-            last_name: res.data.last_name,
-            address: res.data.address,
-            city: res.data.city,
-            country: res.data.country,
-            zip_code: res.data.zip_code,
-          })
+        setEmail(res.data.email)
+        setWallet(res.data.wallet)
+        setFirst_name(res.data.first_name)
+        setLast_name(res.data.last_name)
+        setCountry(res.data.country)
+        setAddress(res.data.address)
+        setZip_code(res.data.zip_code)
+        setCity(res.data.city)
+        const oldemail = {
+          email: res.data.email
         }
+        localStorage.setItem("detail", JSON.stringify(oldemail));
+
+
       }
-      ).catch(err => {
-        console.log(err.msg)
-      })
-  }
-
-  handleSubmit = e => {
-    e.preventDefault();
-    const { email,
-      wallet,
-      first_name,
-      last_name,
-      country,
-      address,
-      zip_code,
-      city } = this.state;
-
-    const { user_id, token } = this.props
-    if (this.checkform()) {
-      this.updateUser(user_id, token, email,
-        wallet,
-        first_name,
-        last_name,
-        country,
-        address,
-        zip_code,
-        city);
-      if (email !== this.props.email) {
-        this.setState({
-          detail: "Confirm New Email.. check your mail"
-        })
-      }
-    } else {
-      this.checkform();
-    }
-
-  }
-
-  componentDidMount() {
-    const user = JSON.parse(localStorage.getItem("detail"));
-
-    const { email, wallet, first_name,
-      last_name,
-      country,
-      address,
-      zip_code,
-      city } = this.props;
 
 
-    user ?
-      this.setState({
-        email: user.email,
-        wallet: user.wallet,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        country: user.country,
-        address: user.address,
-        zip_code: user.zip_code,
-        city: user.city,
-      })
-      :
-      this.setState({
-        email: email,
-        wallet: wallet,
-        first_name: first_name,
-        last_name: last_name,
-        country: country,
-        address: address,
-        zip_code: zip_code,
-        city: city,
-      })
-  }
+      )
+  }, [])
 
-  render() {
-    const { username } = this.props
-    const {
-      email, wallet,
-      first_name,
-      last_name,
-      country,
-      address,
-      zip_code,
-      city,
-      new_password1,
-      new_password2,
-      old_password, detail } = this.state
+  return (
+    <>
+      <div className="content">
+        {detail ?
+          <div className="alert alert-success" role="alert">
+            {detail}
+          </div>
+          :
+          null
+        }
+        <Row>
+          <Col md="8">
+            <Card>
+              <CardHeader>
+                <h5 className="title">Edit Profile</h5>
+              </CardHeader>
+              <CardBody>
+                <Form>
+                  <Row>
 
-    return (
-      <>
-        <div className="content">
-          {detail ?
-            <div className="alert alert-success" role="alert">
-              {detail}
-            </div>
-            :
-            null
-          }
-          <Row>
-            <Col md="8">
-              <Card>
-                <CardHeader>
-                  <h5 className="title">Edit Profile</h5>
-                </CardHeader>
-                <CardBody>
-                  <Form>
-                    <Row>
-
-                      <Col className="pr-md-1" md="5">
-                        <FormGroup>
-                          <label>Company (disabled)</label>
-                          <Input
-                            defaultValue="UserMax"
-                            disabled
-                            placeholder="Company"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="px-md-1" md="3">
-                        <FormGroup>
-                          <label>Name (disabled)</label>
-                          <Input
-                            defaultValue={username}
-                            disabled
-                            placeholder="Username"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="4">
-                        <FormGroup className={this.state.errors["email"] ? "has-danger" :
-                          "input-group-focus"}>
-                          <label htmlFor="exampleInputEmail1">
-                            Email address
+                    <Col className="pr-md-1" md="5">
+                      <FormGroup>
+                        <label>Company (disabled)</label>
+                        <Input
+                          defaultValue="UserMax "
+                          disabled
+                          placeholder="Company"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="px-md-1" md="3">
+                      <FormGroup>
+                        <label>Name (disabled)</label>
+                        <Input
+                          defaultValue={username}
+                          disabled
+                          placeholder="Username"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pl-md-1" md="4">
+                      <FormGroup className={errors["email"] ? "has-danger" :
+                        "input-group-focus"}>
+                        <label htmlFor="exampleInputEmail1">
+                          Email address
                           </label>
-                          <Input
-                            type="email"
-                            name="email"
-                            onChange={this.handleChange}
-                            value={email}
-                            placeholder={
-                              this.state.errors["email"] ?
-                                this.state.errors['email']
-                                :
-                                "email"
-                            }
-                            onFocus={e =>
-                              this.setState({ emailFocus: true })
-                            }
-                            onBlur={this.handleEmail
-                            }
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="6">
-                        <FormGroup>
-                          <label>First Name</label>
-                          <Input
-                            placeholder="First Name"
-                            type="text"
-                            onChange={this.handleChange}
-                            name="first_name"
-
-                            value={
-                              this.props.first_name === null ?
-                                first_name
-                                :
-                                this.props.first_name
-                            }
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="6">
-                        <FormGroup>
-                          <label>Last Name</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="last_name"
-                            value={this.props.last_name === null ?
-                              last_name
+                        <Input
+                          type="email"
+                          name="email"
+                          onChange={e => setEmail(e.target.value)}
+                          value={email}
+                          placeholder={
+                            errors["email"] ?
+                              errors['email']
                               :
-                              this.props.last_name
-                            }
-                            placeholder="Last Name"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col md="12">
-                        <FormGroup>
-                          <label>Address</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="address"
-                            value={this.props.address === null ?
-                              address
+                              "email"
+                          }
+                          onFocus={e =>
+                            setemailFocus(true)
+                          }
+                          onBlur={() => handleEmail()
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="pr-md-1" md="6">
+                      <FormGroup>
+                        <label>First Name</label>
+                        <Input
+                          placeholder="First Name"
+                          type="text"
+                          onChange={e => setFirst_name(e.target.value)}
+                          name="first_name"
+
+                          value={first_name}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pl-md-1" md="6">
+                      <FormGroup>
+                        <label>Last Name</label>
+                        <Input
+                          onChange={e => setLast_name(e.target.value)}
+                          name="last_name"
+                          value={last_name}
+                          placeholder="Last Name"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="12">
+                      <FormGroup>
+                        <label>Address</label>
+                        <Input
+                          onChange={e => setAddress(e.target.value)}
+                          name="address"
+                          value={address}
+                          placeholder="Home Address"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="pr-md-1" md="4">
+                      <FormGroup>
+                        <label>City</label>
+                        <Input
+                          onChange={e => setCity(e.target.value)}
+                          name="city"
+                          value={city}
+                          placeholder="City"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="px-md-1" md="4">
+                      <FormGroup>
+                        <label>Country</label>
+                        <Input
+                          onChange={e => setCountry(e.target.value)}
+                          name="country"
+                          value={country}
+                          placeholder="Country"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pl-md-1" md="4">
+                      <FormGroup>
+                        <label>Postal Code</label>
+                        <Input
+                          onChange={e => setZip_code(e.target.value)}
+                          name="zip_code"
+                          value={zip_code}
+                          placeholder="ZIP Code"
+                          type="number" />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="8">
+                      <Label for="error" className="control-label">{errors["wallet"]}</Label>
+                      <FormGroup className={errors["wallet"] ? "has-danger" :
+                        "input-group-focus"}
+                      >
+                        <label>Wallet Address</label>
+                        <Input
+                          onChange={e => setWallet(e.target.value)}
+                          value={wallet}
+                          name="wallet"
+                          placeholder={
+                            errors["wallet"] ?
+                              errors["wallet"]
                               :
-                              this.props.address
-                            }
-                            placeholder="Home Address"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="4">
-                        <FormGroup>
-                          <label>City</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="city"
-                            value={city}
-                            placeholder="City"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="px-md-1" md="4">
-                        <FormGroup>
-                          <label>Country</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="country"
-                            value={country}
-                            placeholder="Country"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="4">
-                        <FormGroup>
-                          <label>Postal Code</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="zip_code"
-                            value={this.props.address === null ?
-                              zip_code
-                              :
-                              this.props.zip_code
-                            }
-                            placeholder="ZIP Code"
-                            type="number" />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col md="8">
-                        <Label for="error" className="control-label">{this.state.errors["wallet"]}</Label>
-                        <FormGroup className={this.state.errors["wallet"] ? "has-danger" :
-                          "input-group-focus"}
-                        >
-                          <label>Wallet Address</label>
-                          <Input
-                            onChange={this.handleChange}
-                            value={
-                              wallet
-                            }
-                            name="wallet"
-                            placeholder={
-                              this.state.errors["wallet"] ?
-                                this.state.errors["wallet"]
-                                :
-                                "Your BTC wallet address"
-                            }
+                              "Your BTC wallet address"
+                          }
 
 
-                            type="text"
-                            onFocus={e =>
-                              this.setState({ walletFocus: true })
-                            }
-                            onBlur={this.handleWallet
-                            }
-                          />
+                          type="text"
+                          onFocus={e => setwalletFocus(true)
+                          }
+                          onBlur={() => handleWallet()
+                          }
+                        />
 
-                        </FormGroup>
-                      </Col>
-                      <Col md="4">
-                        <hr></hr>
-                        <Button className="btn-fill" color="primary" type="submit" onClick={this.handleSubmit}>
+                      </FormGroup>
+                    </Col>
+                    <Col md="4">
+                      <hr></hr>
+                      {load === true ?
+                        <div className="loader loader-1">
+                          <div className="loader-outter"></div>
+                          <div className="loader-inner"></div>
+                        </div>
+                        :
+                        <Button className="btn-fill" color="primary" onClick={e => handleSubmit(e)}>
                           Save
                       </Button>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="px-md-1" md="6">
-                        <Label for="error" className="control-label">{this.state.errors["new_password1"]}</Label>
-                        <FormGroup className={this.state.errors["new_password1"] ? "has-danger" :
-                          "input-group-focus"}
-                        >
-                          <label>New Password</label>
-                          <Input
-                            onChange={this.handleChange}
-                            value={new_password1}
-                            name="new_password1"
-                            type="password"
-                            onFocus={e =>
-                              this.setState({ passwordFocus: true })
-                            }
-                            onBlur={
-                              this.handlePass
-                            }
-                            placeholder="New Password"
+                      }
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="px-md-1" md="6">
+                      <Label for="error" className="control-label">{errors["new_password1"]}</Label>
+                      <FormGroup className={errors["new_password1"] ? "has-danger" :
+                        "input-group-focus"}
+                      >
+                        <label>New Password</label>
+                        <Input
+                          onChange={e => setNew_password1(e.target.value)}
+                          value={new_password1}
+                          name="new_password1"
+                          type="password"
+                          onFocus={e => setpasswordFocus(true)
+                          }
+                          onBlur={
+                            () => handlePass()
+                          }
+                          placeholder="New Password"
 
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pl-md-1" md="6">
-                        <Label for="error" className="control-label">{this.state.errors["new_password2"]}</Label>
-                        <FormGroup className={this.state.errors["new_password2"] ? "has-danger" :
-                          "input-group-focus"}
-                        >
-                          <label>Confirm New Password</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="new_password2"
-                            value={new_password2}
-                            placeholder={
-                              this.state.errors["new_password2"] ?
-                                this.state.errors["new_password2"]
-                                :
-                                "Confirm New Password"
-                            }
-                            onBlur={
-                              this.confirmpassword
-                            }
-                            type="password" />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="pr-md-1" md="6">
-                        <FormGroup>
-                          <label>Old Password</label>
-                          <Input
-                            onChange={this.handleChange}
-                            name="old_password"
-                            value={old_password}
-                            placeholder="Old Password"
-                            type="password"
-                            onBlur={
-                              this.handleOldPass
-                            }
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col className="pr-md-1" md="6">
-                        <Button className="btn-fill" color="secondary" type="submit">
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pl-md-1" md="6">
+                      <Label for="error" className="control-label">{errors["new_password2"]}</Label>
+                      <FormGroup className={errors["new_password2"] ? "has-danger" :
+                        "input-group-focus"}
+                      >
+                        <label>Confirm New Password</label>
+                        <Input
+                          onChange={e => setNew_password2(e.target.value)}
+                          name="new_password2"
+                          value={new_password2}
+                          placeholder={
+                            errors["new_password2"] ?
+                              errors["new_password2"]
+                              :
+                              "Confirm New Password"
+                          }
+                          onBlur={
+                            () => confirmpassword()
+                          }
+                          type="password" />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="pr-md-1" md="6">
+                      <FormGroup>
+                        <label>Old Password</label>
+                        <Input
+                          onChange={e => setOld_password(e.target.value)}
+                          name="old_password"
+                          value={old_password}
+                          placeholder="Old Password"
+                          type="password"
+                          onBlur={
+                            () => handleOldPass()
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pr-md-1" md="6">
+                      {passload === true ?
+                        <div className="loader loader-1">
+                          <div className="loader-outter"></div>
+                          <div className="loader-inner"></div>
+                        </div>
+                        :
+                        <Button className="btn-fill" color="secondary" onClick={() => handlePassChange()}>
                           Change
                       </Button>
-                      </Col>
-                    </Row>
-                  </Form>
-                </CardBody>
-                <CardFooter>
+                      }
+                    </Col>
+                  </Row>
+                </Form>
+              </CardBody>
+              <CardFooter>
 
-                </CardFooter>
-              </Card>
-            </Col>
-            <Col md="4">
-              <Card className="card-user">
-                <CardBody>
-                  <CardText />
-                  <div className="author">
-                    <div className="block block-one" />
-                    <div className="block block-two" />
-                    <div className="block block-three" />
-                    <div className="block block-four" />
+              </CardFooter>
+            </Card>
+          </Col>
+          <Col md="4">
+            <Card className="card-user">
+              <CardBody>
+                <CardText />
+                <div className="author">
+                  <div className="block block-one" />
+                  <div className="block block-two" />
+                  <div className="block block-three" />
+                  <div className="block block-four" />
 
 
 
 
-                  </div>
+                </div>
 
-                </CardBody>
-                <CardFooter>
-                  <div className="button-container">
+              </CardBody>
+              <CardFooter>
+                <div className="button-container">
 
-                  </div>
-                </CardFooter>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </>
-    );
-  }
+                </div>
+              </CardFooter>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </>
+  );
 }
 
 
-const mapStateToProps = state => {
-  return {
-    user_id: state.auth.userId,
-    token: state.auth.token,
-    email: state.auth.email,
-    username: state.auth.username,
-    wallet: state.auth.btc_wallet,
-    first_name: state.auth.first_name,
-    last_name: state.auth.last_name,
-    country: state.auth.country,
-    address: state.auth.address,
-    zip_code: state.auth.zip_code,
-    city: state.auth.city,
-  }
-}
 
-export default connect(mapStateToProps)(UserProfile);
+
+export default UserProfile;

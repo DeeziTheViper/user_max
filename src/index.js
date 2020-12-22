@@ -51,10 +51,18 @@ ReactDOM.render(
     <BrowserRouter>
       <Router history={hist}>
         <Switch>
+          {user ?
+            <Redirect from="/login" to="/user/dashboard" />
+            :
+            <Route path="/login" render={props => <LoginPage {...props} />} />
+          }
 
-          <Route path="/login" render={props => <LoginPage {...props} />} />
           <Route path="/support" render={props => <ContactPage {...props} />} />
-          <Route path="/register" render={props => <RegisterPage {...props} />} />
+          {user ?
+            <Route path="/register" render={props => <RegisterPage {...props} />} />
+            :
+            <Redirect from="/register" to="/user/dashboard" />
+          }
           <Route path="/pricing" render={props => <Rates {...props} />} />
           <Route path="/password-reset/confirm/:uid/:token/" render={props => <PassReset {...props} />} />
           <Route path="/email-sent" render={props => <EmailSent {...props} />} />
@@ -71,7 +79,7 @@ ReactDOM.render(
           {user ?
             <Switch>
               <Route path="/user" render={props => <AdminLayout {...props} />} />
-
+              <Redirect from="/user" to="/user/dashboard" />
             </Switch>
             :
 

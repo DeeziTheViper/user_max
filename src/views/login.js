@@ -138,7 +138,7 @@ class LoginPage extends React.Component {
         const { error, token, detail } = this.props;
         const { email, password } = this.state;
         if (token) {
-            return <Redirect to="/user"></Redirect>;
+            return <Redirect to="/user" />;
         }
 
         return (

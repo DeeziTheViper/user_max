@@ -2,13 +2,14 @@
 
 from .base import *
 import dj_database_url
-DEBUG = False
-ALLOWED_HOSTS = ['https://usermax.herokuapp.com']
+import django_heroku
+DEBUG = True
+ALLOWED_HOSTS = ['usermax.herokuapp.com']
 
 DATABASES = {} 
 db_from_env = dj_database_url.config(conn_max_age=600)
 
-
+SITE_ID = 1
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -28,4 +29,6 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+
+django_heroku.settings(locals(), staticfiles=True)
 

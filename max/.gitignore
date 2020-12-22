@@ -11,10 +11,7 @@ local_settings.py
 package.json
 jsconfig.json
 gulpfile.js
-/build
-/buildx
-build
-buildx
+
 /node_modules
 /.pnp
 .pnp.js
@@ -84,7 +81,7 @@ coverage.xml
 *.pot
 
 # Django stuff:
-media/
+/
 *.log
 
 # Sphinx documentation
@@ -233,7 +230,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# pytype static type analyzer
+# pytype type analyzer
 .pytype/
 
 # Cython debug symbols

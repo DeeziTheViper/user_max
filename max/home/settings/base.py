@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -53,7 +54,6 @@ TEMPLATES = [
         'DIRS': [
              os.path.join(BASE_DIR, 'build'),
             os.path.join(BASE_DIR, 'templates')
-           
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -78,12 +78,13 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static/'),os.path.join(BASE_DIR, 'templates')]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'build/static/media', )
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static/')]
+
+
 
 
 
@@ -128,3 +129,7 @@ SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD=True
 
 ACCOUNT_ADAPTER = 'users.accountadapter.CustomAccountAdapter'
 CUSTOM_ACCOUNT_CONFIRM_EMAIL_URL = "/verifyemail/{0}"
+STATICFILES_FINDERS = (           'django.contrib.staticfiles.finders.FileSystemFinder',    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+

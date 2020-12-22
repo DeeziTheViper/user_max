@@ -3,7 +3,7 @@
 from .base import *
 
 
-ALLOWED_HOSTS += ['127.0.0.1','localhost:8000','localhost:3000']
+ALLOWED_HOSTS = ['127.0.0.1','localhost:8000','localhost:3000']
 
 DEBUG = True
 SITE_ID = 2
@@ -19,7 +19,7 @@ DATABASES = {
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000','http://127.0.0.1:3000','http://localhost:3001'
 )
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT',cast=int)
