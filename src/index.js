@@ -59,9 +59,9 @@ ReactDOM.render(
 
           <Route path="/support" render={props => <ContactPage {...props} />} />
           {user ?
-            <Route path="/register" render={props => <RegisterPage {...props} />} />
-            :
             <Redirect from="/register" to="/user/dashboard" />
+            :
+            <Route path="/register" render={props => <RegisterPage {...props} />} />
           }
           <Route path="/pricing" render={props => <Rates {...props} />} />
           <Route path="/password-reset/confirm/:uid/:token/" render={props => <PassReset {...props} />} />

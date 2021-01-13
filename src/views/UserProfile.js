@@ -312,7 +312,7 @@ const UserProfile = () => {
     axios.get('/rest-auth/user/')
       .then(res => {
         setEmail(res.data.email)
-        setWallet(res.data.wallet)
+        setWallet(res.data.btc_wallet)
         setFirst_name(res.data.first_name)
         setLast_name(res.data.last_name)
         setCountry(res.data.country)
