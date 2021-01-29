@@ -210,13 +210,13 @@ class NewEmailConfirmation(APIView):
         emailAddress = EmailAddress.objects.filter(user=user, verified=True).exists()
 
         if emailAddress:
-            return Response({'message': 'This email is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'This email is already verified'}, status=status.HTTP_200_OK)
         else:
             try:
                 send_email_confirmation(request, user=user)
-                return Response({'message': 'Email confirmation sent'}, status=status.HTTP_201_CREATED)
+                return Response({'detail': 'Email confirmation sent'}, status=status.HTTP_200_OK)
             except APIException:
-                return Response({'message': 'This email does not exist, please create a new account'}, status=status.HTTP_403_FORBIDDEN)
+                return Response({'detail': 'This email does not exist, please create a new account'}, status=status.HTTP_200_OK)
 
 
 
