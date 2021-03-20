@@ -87,8 +87,8 @@ class EmailSent extends React.Component {
     componentDidMount() {
         document.body.classList.toggle("register-page");
         document.documentElement.addEventListener("mousemove", this.followCursor);
-        if (localStorage.key("user")) {
-            let user = JSON.parse(localStorage.getItem("user"));
+        if (localStorage.key("account")) {
+            let user = JSON.parse(localStorage.getItem("account"));
             if (user) {
                 if (user.email) {
                     this.setState({ email: user.email })
@@ -113,9 +113,9 @@ class EmailSent extends React.Component {
 
 
                 })
-                console.log(res)
+
             }).catch(err => {
-                console.log(err);
+
                 setTimeout(() => {
                     this.setState({
                         detail: "Link Broken", loading: false

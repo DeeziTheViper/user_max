@@ -116,7 +116,7 @@ export const authSignup = (username, email, password1, password2, btc_wallet) =>
             expirationDate: new Date(new Date().getTime() + 3600 * 1000),
 
           }
-          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("account", JSON.stringify(user));
           dispatch(authSuccess(user));
           dispatch(checkAuthTimeout(3600));
         }
