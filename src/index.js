@@ -76,15 +76,10 @@ ReactDOM.render(
             render={props => <ForgotPass {...props} />}
           />
 
-          {user ?
-            <Switch>
-              <Route path="/user" render={props => <AdminLayout {...props} />} />
-              <Redirect from="/user" to="/user/dashboard" />
-            </Switch>
-            :
 
-            <Redirect from="/user" to="/login" />
-          }
+          <Route path="/user" render={props => <AdminLayout {...props} />} />
+
+          <Redirect from="/user" to="/user/dashboard" />
           <Route path="/" render={props => <Home {...props} />} />
         </Switch>
       </Router>

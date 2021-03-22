@@ -2,6 +2,8 @@
 import React from "react";
 import classnames from "classnames";
 import { authLogin } from "../store/actions/auth";
+import { useDispatch, useSelector } from "react-redux";
+
 // reactstrap components
 import {
     Card,
@@ -22,26 +24,37 @@ import {
 // core components
 import ExamplesNavbar from "components/Navbars/IndexNav.js";
 import Footer from "components/Footer/Footer.js";
-import { connect } from "react-redux"
 import { Redirect, Link } from "react-router-dom";
 
 
-class LoginPage extends React.Component {
-    state = {
+const LoginPage = () => {
+    const [formData, setFormData] = React.useState({
         email: "",
         password: "",
+        emailFocus: "",
+        errors: '',
+        passwordFocus: ''
+    })
+
+    const [square, setSquare] = React.useState({
         squares1to6: "",
         squares7and8: "",
-        errors: []
-    };
+    })
+    const dispatch = useDispatch()
+    const loading = useSelector(state => state.auth.loading)
+    const detail = useSelector(state => state.auth.detail)
+    const token = useSelector(state => state.auth.token)
+    const error = useSelector(state => state.auth.error)
 
-    handleChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+    const { email, password, errors, emailFocus, passwordFocus } = formData
+    const { squares1to6, squares7and8 } = square
+
+    const handleChange = e => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
-    handleEmail = e => {
-        this.setState({ emailFocus: false })
-        let { email } = this.state
+    const handleEmail = e => {
+        setFormData({ ...formData, emailFocus: false })
         let errors = {};
         let formIsValid = true;
         //Email
@@ -49,13 +62,12 @@ class LoginPage extends React.Component {
             formIsValid = false;
             errors["email"] = "Cannot be empty";
         }
-        this.setState({ errors: errors });
+        setFormData({ ...formData, errors: errors });
         return formIsValid;
     }
 
-    handlePass = e => {
-        this.setState({ passwordFocus: false })
-        let { password } = this.state;
+    const handlePass = e => {
+        setFormData({ ...formData, passwordFocus: false })
         let errors = {};
         let formIsValid = true;
         if (!password) {
@@ -63,12 +75,11 @@ class LoginPage extends React.Component {
             errors["password"] = "Input Password"
         }
 
-        this.setState({ errors: errors });
+        setFormData({ ...formData, errors: errors });
         return formIsValid;
     }
 
-    checkform() {
-        let { email, password } = this.state;
+    const checkform = () => {
         let errors = {};
         let formIsValid = true;
 
@@ -87,36 +98,25 @@ class LoginPage extends React.Component {
             errors["password"] = "Input Password"
         }
 
-        this.setState({ errors: errors });
+        setFormData({ ...formData, errors: errors });
         return formIsValid;
 
     }
 
 
 
-    onSubmit = e => {
+    const onSubmit = e => {
         e.preventDefault();
-        const { email, password } = this.state;
-        if (this.checkform()) {
-            this.props.login(email, password);
+        if (checkform()) {
+            dispatch(authLogin(email, password))
         }
     };
 
-    componentDidMount() {
-        document.body.classList.toggle("register-page");
-        document.documentElement.addEventListener("mousemove", this.followCursor);
-    }
-    componentWillUnmount() {
-        document.body.classList.toggle("register-page");
-        document.documentElement.removeEventListener(
-            "mousemove",
-            this.followCursor
-        );
-    }
-    followCursor = event => {
+    const followCursor = event => {
         let posX = event.clientX - window.innerWidth / 2;
         let posY = event.clientY - window.innerWidth / 6;
-        this.setState({
+        setSquare({
+            ...square,
             squares1to6:
                 "perspective(500px) rotateY(" +
                 posX * 0.05 +
@@ -132,154 +132,148 @@ class LoginPage extends React.Component {
         });
     };
 
-
-
-    render() {
-        const { error, token, detail } = this.props;
-        const { email, password } = this.state;
-        if (token) {
-            return <Redirect to="/user" />;
+    React.useEffect(() => {
+        document.body.classList.toggle("register-page");
+        document.documentElement.addEventListener("mousemove", followCursor);
+        return () => {
+            document.body.classList.toggle("register-page");
+            document.documentElement.removeEventListener(
+                "mousemove",
+                followCursor
+            );
         }
+    }, [])
 
-        return (
-            <>
-                <ExamplesNavbar />
-                <div className="wrapper">
-                    <div className="page-header">
-                        <div className="page-header-image" />
-                        <div className="content">
-                            <Container>
-                                <div
-                                    className="square square-7"
-                                    id="square7"
-                                    style={{ transform: this.state.squares7and8 }}
-                                />
-                                <div
-                                    className="square square-8"
-                                    id="square8"
-                                    style={{ transform: this.state.squares7and8 }}
-                                />
-                                <Row>
-                                    <div className="mx-auto col-md-8 col-lg-5" >
+    if (token !== null) {
+        return <Redirect to="/user" />
+    }
+    return (
 
-                                        <Card className="card-register">
-                                            <CardHeader>
-                                            </CardHeader>
-                                            <h6 className="card-title" style={{ textAlign: 'center' }}>Login</h6>
+        <>
 
-                                            <CardBody>
-                                                {this.props.error ?
-                                                    <Alert color="danger">{error && <p>{this.props.error.detail}</p>}</Alert>
+            <ExamplesNavbar />
+            <div className="wrapper">
+                <div className="page-header">
+                    <div className="page-header-image" />
+                    <div className="content">
+                        <Container>
+                            <div
+                                className="square square-7"
+                                id="square7"
+                                style={{ transform: squares7and8 }}
+                            />
+                            <div
+                                className="square square-8"
+                                id="square8"
+                                style={{ transform: squares7and8 }}
+                            />
+                            <Row>
+                                <div className="mx-auto col-md-8 col-lg-5" >
+
+                                    <Card className="card-register">
+                                        <CardHeader>
+                                        </CardHeader>
+                                        <h6 className="card-title" style={{ textAlign: 'center' }}>Login</h6>
+
+                                        <CardBody>
+                                            {error ?
+                                                <Alert color="danger">{error && <p>{error.detail}</p>}</Alert>
+                                                :
+                                                null
+                                            }
+                                            {detail ?
+                                                <Alert color="danger" ><p>{detail.detail}</p></Alert>
+
+                                                : null}
+                                            <Form className="form" onSubmit={onSubmit}>
+                                                <Label for="error" className="control-label">{errors["email"]}</Label>
+
+                                                <InputGroup
+                                                    className={errors["email"] ? "has-danger" : classnames({
+                                                        "input-group-focus": emailFocus
+                                                    })}>
+                                                    <InputGroupAddon addonType="prepend">
+                                                        <InputGroupText>
+                                                            <i className="tim-icons icon-email-85" />
+                                                        </InputGroupText>
+                                                    </InputGroupAddon>
+                                                    <Input
+                                                        onChange={e => handleChange(e)}
+                                                        value={email}
+                                                        name="email"
+                                                        placeholder="Email"
+                                                        type="text"
+                                                        onFocus={e => setFormData({ ...formData, emailFocus: true })}
+                                                        onBlur={e => handleEmail(e)}
+                                                        style={{ cursor: "text" }}
+                                                    />
+                                                </InputGroup>
+                                                <Label for="error" className="control-label">{errors["password1"]}</Label>
+                                                <InputGroup
+                                                    className={errors["password"] ? "has-danger" : classnames({
+                                                        "input-group-focus": passwordFocus
+                                                    })}
+                                                >
+                                                    <InputGroupAddon addonType="prepend">
+                                                        <InputGroupText>
+                                                            <i className="tim-icons icon-lock-circle" />
+                                                        </InputGroupText>
+                                                    </InputGroupAddon>
+                                                    <Input
+                                                        onChange={e => handleChange(e)}
+                                                        value={password}
+                                                        name="password"
+                                                        placeholder="Password"
+                                                        type="password"
+                                                        onFocus={e =>
+                                                            setFormData({ ...formData, passwordFocus: true })
+                                                        }
+                                                        onBlur={
+                                                            handlePass
+                                                        }
+                                                        style={{ cursor: "text" }}
+                                                    />
+                                                </InputGroup>
+                                            </Form>
+                                        </CardBody>
+
+
+                                        <div className="text-center card-footer">
+
+                                            {
+                                                loading ?
+                                                    <div className="loader loader-1">
+                                                        <div className="loader-outter"></div>
+                                                        <div className="loader-inner"></div>
+                                                    </div>
                                                     :
-                                                    null
-                                                }
-                                                {this.props.detail ?
-                                                    <Alert color="danger" ><p>{this.props.detail.detail}</p></Alert>
 
-                                                    : null}
-                                                <Form className="form" onSubmit={this.onSubmit}>
-                                                    <Label for="error" className="control-label">{this.state.errors["email"]}</Label>
-
-                                                    <InputGroup
-                                                        className={this.state.errors["email"] ? "has-danger" : classnames({
-                                                            "input-group-focus": this.state.emailFocus
-                                                        })}>
-                                                        <InputGroupAddon addonType="prepend">
-                                                            <InputGroupText>
-                                                                <i className="tim-icons icon-email-85" />
-                                                            </InputGroupText>
-                                                        </InputGroupAddon>
-                                                        <Input
-                                                            onChange={this.handleChange}
-                                                            value={email}
-                                                            name="email"
-                                                            placeholder="Email"
-                                                            type="text"
-                                                            onFocus={e => this.setState({ emailFocus: true })}
-                                                            onBlur={this.handleEmail}
-                                                            style={{ cursor: "text" }}
-                                                        />
-                                                    </InputGroup>
-                                                    <Label for="error" className="control-label">{this.state.errors["password1"]}</Label>
-                                                    <InputGroup
-                                                        className={this.state.errors["password"] ? "has-danger" : classnames({
-                                                            "input-group-focus": this.state.passwordFocus
-                                                        })}
-                                                    >
-                                                        <InputGroupAddon addonType="prepend">
-                                                            <InputGroupText>
-                                                                <i className="tim-icons icon-lock-circle" />
-                                                            </InputGroupText>
-                                                        </InputGroupAddon>
-                                                        <Input
-                                                            onChange={this.handleChange}
-                                                            value={password}
-                                                            name="password"
-                                                            placeholder="Password"
-                                                            type="password"
-                                                            onFocus={e =>
-                                                                this.setState({ passwordFocus: true })
-                                                            }
-                                                            onBlur={
-                                                                this.handlePass
-                                                            }
-                                                            style={{ cursor: "text" }}
-                                                        />
-                                                    </InputGroup>
-                                                </Form>
-                                            </CardBody>
-
-
-                                            <div className="text-center card-footer">
-
-                                                {
-                                                    this.props.loading ?
-                                                        <div className="loader loader-1">
-                                                            <div className="loader-outter"></div>
-                                                            <div className="loader-inner"></div>
-                                                        </div>
-                                                        :
-
-                                                        <Button className="btn-round btn btn-primary btn-lg btn-block" onClick={this.onSubmit}>
-                                                            Get Started
+                                                    <Button className="btn-round btn btn-primary btn-lg btn-block" onClick={onSubmit}>
+                                                        Login
                                                         </Button>
-                                                }
+                                            }
 
-                                                <div className="pull-left ml-3 mb-3">
-                                                    <h6 className="link footer-link" color="info"><Link to="/register">Create Account</Link></h6>
-                                                </div>
-                                                <div className="pull-right mr-3 mb-3">
-                                                    <h6 className="link footer-link" color="info"><Link to="/password/reset">Forgot Password?</Link></h6>
-                                                </div>
+                                            <div className="pull-left ml-3 mb-3">
+                                                <h6 className="link footer-link" color="info"><Link to="/register">Create Account</Link></h6>
                                             </div>
+                                            <div className="pull-right mr-3 mb-3">
+                                                <h6 className="link footer-link" color="info"><Link to="/password/reset">Forgot Password?</Link></h6>
+                                            </div>
+                                        </div>
 
-                                        </Card>
-                                    </div>
-                                </Row>
-                                <div className="register-bg" />
+                                    </Card>
+                                </div>
+                            </Row>
+                            <div className="register-bg" />
 
-                            </Container>
-                        </div>
+                        </Container>
                     </div>
-                    <Footer />
                 </div>
-            </>
-        );
-    }
+                <Footer />
+            </div>
+        </>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        error: state.auth.error,
-        loading: state.auth.loading,
-        token: state.auth.token,
-        detail: state.auth.detail
-    }
-}
 
-const mapDispatchToProps = dispatch => {
-    return {
-        login: (username, password) => dispatch(authLogin(username, password))
-    };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default LoginPage
